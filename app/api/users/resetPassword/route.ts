@@ -11,6 +11,19 @@ export async function PATCH(request: NextRequest) {
     const reqBody = await request.json();
     const { password, token } = reqBody;
 
+    // ✅ ADD PASSWORD VALIDATION HERE
+    const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*]).{7,}$/;
+
+    if (!passwordRegex.test(password)) {
+      return NextResponse.json(
+        {
+          message:
+            "Password must be at least 7 characters and include 1 number and 1 special character",
+        },
+        { status: 400 }
+      );
+    }
+
     const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
     const user = await User.findOne({

@@ -1,29 +1,35 @@
-import {connect} from "@/dbconfig/dbConfig";
+import { connect } from "@/dbconfig/dbConfig";
 import User from "@/models/userModels";
 import { NextResponse, NextRequest } from "next/server";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
-import path from "path";
 
 export async function POST(request: NextRequest) {
     try {
         await connect();
+
         const reqBody = await request.json();
         const { email, password } = reqBody;
 
         const user = await User.findOne({ email });
 
         if (!user) {
-            return NextResponse.json({ message: "user doesn't exist" }, { status: 400 });
+            return NextResponse.json(
+                { message: "User does not exist" }, // ✅ fixed message
+                { status: 400 }
+            );
         }
 
         const validPassword = await bcryptjs.compare(password, user.password);
 
         if (!validPassword) {
-            return NextResponse.json({ message: "Invalid User Password" }, { status: 400 });
+            return NextResponse.json(
+                { message: "Invalid user password" }, // ✅ cleaned message
+                { status: 400 }
+            );
         }
 
-        // ✅ ADDED THIS CHECK HERE
+        // ✅ CHECK EMAIL VERIFIED
         if (!user.isVerfied) {
             console.log("User email not verified:", user.email);
             return NextResponse.json(
@@ -32,23 +38,35 @@ export async function POST(request: NextRequest) {
             );
         }
 
-
-        //create token data
+        // ✅ TOKEN DATA
         const tokendata = {
             id: user._id,
             username: user.username,
             email: user.email
         };
 
-        //create jwt token
-        const token = jwt.sign(tokendata, process.env.SECRET_KEY as string, { expiresIn: '1h' });
+        // ✅ CREATE TOKEN
+        const token = jwt.sign(
+            tokendata,
+            process.env.SECRET_KEY as string,
+            { expiresIn: "1h" }
+        );
 
-        //set cookie
-        const response = NextResponse.json({ message: "user sucessfully Login", success: true });
+        // ✅ RESPONSE
+        const response = NextResponse.json({
+            message: "User successfully logged in", // ✅ fixed spelling
+            success: true,
+            user: {
+                _id: user._id.toString(),
+                username: user.username,
+                email: user.email
+            }
+        });
 
+        // ✅ SET COOKIE
         response.cookies.set("token", token, {
             httpOnly: true,
-            secure: true,
+            secure: process.env.NODE_ENV === "production", // ✅ safer
             sameSite: "strict",
             maxAge: 3600,
             path: "/"
@@ -58,6 +76,9 @@ export async function POST(request: NextRequest) {
 
     } catch (error: any) {
         console.log(error.message);
-        return NextResponse.json({ message: error.message }, { status: 500 });
+        return NextResponse.json(
+            { message: error.message },
+            { status: 500 }
+        );
     }
 }

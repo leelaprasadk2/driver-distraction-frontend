@@ -1,25 +1,48 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { motion } from "framer-motion";
-import { User, Mail, Lock, Loader2 } from "lucide-react";
+import { User, Mail, Lock, Loader2, Eye, EyeOff } from "lucide-react";
 
 export default function SignupPage() {
 
-  const [user, setUser] = React.useState({
+  const [user, setUser] = useState({
     username: "",
     email: "",
     password: "",
   });
 
   const router = useRouter();
-  const [buttonDisabled, setbuttonDisabled] = React.useState(true);
-  const [loading, setloading] = React.useState(false);
+  const [buttonDisabled, setbuttonDisabled] = useState(true);
+  const [loading, setloading] = useState(false);
+
+  // ✅ NEW STATES
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+
+  // ✅ PASSWORD VALIDATION FUNCTION
+  const validatePassword = (value: string) => {
+    const regex = /^(?=.*[0-9])(?=.*[!@#$%^&*]).{7,}$/;
+
+    if (!regex.test(value)) {
+      setPasswordError(
+        "Password must be 7+ characters, include 1 number & 1 special character"
+      );
+    } else {
+      setPasswordError("");
+    }
+  };
 
   const onSignup = async () => {
+    // ❌ STOP if password invalid
+    if (passwordError) {
+      toast.error("Please fix password before submitting");
+      return;
+    }
+
     try {
       setloading(true);
       const response = await axios.post("/api/users/signup", user);
@@ -38,13 +61,14 @@ export default function SignupPage() {
     if (
       user.email.length > 0 &&
       user.password.length > 0 &&
-      user.username.length > 0
+      user.username.length > 0 &&
+      !passwordError // ✅ ALSO CHECK ERROR
     ) {
       setbuttonDisabled(false);
     } else {
       setbuttonDisabled(true);
     }
-  }, [user]);
+  }, [user, passwordError]);
 
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 overflow-hidden px-4">
@@ -75,7 +99,6 @@ export default function SignupPage() {
             <User className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60" size={18} />
             <input
               type="text"
-              id="username"
               value={user.username}
               onChange={(e) => setUser({ ...user, username: e.target.value })}
               placeholder="Username"
@@ -88,7 +111,6 @@ export default function SignupPage() {
             <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60" size={18} />
             <input
               type="email"
-              id="email"
               value={user.email}
               onChange={(e) => setUser({ ...user, email: e.target.value })}
               placeholder="Email"
@@ -99,15 +121,31 @@ export default function SignupPage() {
           {/* Password */}
           <div className="relative">
             <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60" size={18} />
+
             <input
-              type="password"
-              id="password"
+              type={showPassword ? "text" : "password"}
               value={user.password}
-              onChange={(e) => setUser({ ...user, password: e.target.value })}
+              onChange={(e) => {
+                setUser({ ...user, password: e.target.value });
+                validatePassword(e.target.value); // ✅ LIVE VALIDATION
+              }}
               placeholder="Password"
-              className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/20 border border-white/30 placeholder-white/60 text-white focus:outline-none focus:ring-2 focus:ring-white/60 transition"
+              className="w-full pl-12 pr-12 py-3 rounded-xl bg-white/20 border border-white/30 placeholder-white/60 text-white focus:outline-none focus:ring-2 focus:ring-white/60 transition"
             />
+
+            {/* 👁️ Eye Toggle */}
+            <div
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-white/70 hover:text-white"
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </div>
           </div>
+
+          {/* ❗ Password Error */}
+          {passwordError && (
+            <p className="text-red-300 text-sm -mt-4">{passwordError}</p>
+          )}
 
           {/* Signup Button */}
           <motion.button

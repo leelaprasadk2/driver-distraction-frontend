@@ -30,5 +30,7 @@ export const config = {
     "/profile/:path*",
     "/verifyemail",
     "/forgetPassword",
+    "/dashboard",
+    "/video",
   ],
 };

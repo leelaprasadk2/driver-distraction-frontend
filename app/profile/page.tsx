@@ -4,14 +4,15 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import React, { useState } from "react";
-import Link from "next/link";
 import { motion } from "framer-motion";
-import { User, LogOut, Database } from "lucide-react";
+import { User, LogOut, Database, ImageIcon, Video } from "lucide-react";
 
 export default function ProfilePage() {
 
   const router = useRouter();
+
   const [data, setData] = useState("nothing here");
+  const [count, setCount] = useState(0);
 
   const logout = async () => {
     try {
@@ -19,7 +20,6 @@ export default function ProfilePage() {
       toast.success("Successfully logged out 🚀");
       router.push("/login");
     } catch (error: any) {
-      console.log(error.message);
       toast.error("Logout failed");
     }
   };
@@ -27,8 +27,10 @@ export default function ProfilePage() {
   const getdata = async () => {
     try {
       const res = await axios.get("/api/users/me");
-      console.log(res);
+
       setData(res.data.user.username);
+      setCount(res.data.user.distractedCount);
+
     } catch (error: any) {
       console.log(error.message);
     }
@@ -44,51 +46,76 @@ export default function ProfilePage() {
         className="backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl rounded-3xl p-10 w-full max-w-md text-white"
       >
 
-        {/* Header */}
         <div className="flex items-center justify-center mb-6">
           <User size={40} className="text-white/80" />
         </div>
 
         <h1 className="text-3xl font-bold text-center mb-2">
-          User Profile
+          Driver Monitoring Dashboard
         </h1>
 
         <p className="text-center text-white/70 mb-8">
-          Welcome to your dashboard
+          Welcome {data !== "nothing here" ? data : "User"}
         </p>
 
-        {/* User Data Section */}
-        <div className="text-center mb-8">
+        {/* USER DATA */}
+        <div className="text-center mb-6">
           {data === "nothing here" ? (
-            <p className="text-white/60 text-lg">Nothing here</p>
+            <p className="text-white/60">Click Get Data</p>
           ) : (
-            <Link
-              href={`/profile/${data}`}
-              className="text-xl font-semibold underline hover:text-white transition"
-            >
-              {data}
-            </Link>
+            <>
+              <p className="text-lg font-semibold">{data}</p>
+
+              <p className="mt-2 bg-white/20 px-4 py-2 rounded-lg">
+                🚨 Distracted Count: {count}
+              </p>
+            </>
           )}
         </div>
 
-        {/* Buttons */}
+        {/* BUTTONS */}
         <div className="flex flex-col gap-4">
 
+          {/* IMAGE */}
+          <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={() => router.push("/dashboard")}
+            className="flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-xl"
+          >
+            <ImageIcon size={18} />
+            Image Detection
+          </motion.button>
+
+          {/* VIDEO */}
+          <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={() => router.push("/video")}
+            className="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white py-3 rounded-xl"
+          >
+            <Video size={18} />
+            Video Detection
+          </motion.button>
+
+         
+          {/* GET DATA */}
           <motion.button
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             onClick={getdata}
-            className="flex items-center justify-center gap-2 bg-white text-indigo-600 font-semibold py-3 rounded-xl shadow-lg transition"
+            className="flex items-center justify-center gap-2 bg-white text-indigo-600 font-semibold py-3 rounded-xl"
           >
             <Database size={18} />
             Get Data
           </motion.button>
 
+          {/* LOGOUT */}
           <motion.button
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             onClick={logout}
-            className="flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-xl shadow-lg transition"
+            className="flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white py-3 rounded-xl"
           >
             <LogOut size={18} />
             Logout
