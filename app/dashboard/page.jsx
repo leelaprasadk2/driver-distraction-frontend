@@ -38,10 +38,12 @@ export default function Dashboard() {
 
     try {
       // 🔥 CALL FLASK API
-      const res = await fetch("http://localhost:5000/predict-image", {
-        method: "POST",
-        body: formData,
-      });
+      const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+const res = await fetch(`${API_URL}/predict-image`, {
+  method: "POST",
+  body: formData,
+});
 
       if (!res.ok) {
         throw new Error("Prediction failed");
