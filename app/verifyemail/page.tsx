@@ -35,72 +35,152 @@ export default function VerifyEmailPage() {
         }
     }, [token])
 
-    return (
-        <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 overflow-hidden px-4">
+  return (
+  <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-black relative overflow-hidden flex items-center justify-center px-4">
 
-            {/* Background blur shapes */}
-            <div className="absolute w-72 h-72 bg-white/20 rounded-full blur-3xl top-10 left-10"></div>
-            <div className="absolute w-96 h-96 bg-pink-400/30 rounded-full blur-3xl bottom-10 right-10"></div>
+    {/* Background Glow */}
+    <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute top-20 left-20 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl"></div>
 
-            <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5 }}
-                className="relative backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl rounded-3xl p-10 w-full max-w-md text-white text-center"
-            >
+      <div className="absolute bottom-20 right-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl"></div>
+    </div>
 
-                <h1 className="text-3xl font-bold mb-6">
-                    Email Verification
-                </h1>
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5 }}
+      className="relative w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/10 shadow-2xl rounded-3xl p-10 text-white text-center"
+    >
 
-                {/* Loading State */}
-                {loading && (
-                    <div className="flex flex-col items-center gap-4">
-                        <Loader2 className="animate-spin" size={40} />
-                        <p className="text-white/70">
-                            Verifying your email...
-                        </p>
-                    </div>
-                )}
+      {/* Animated Car */}
+      <motion.div
+        animate={{ y: [0, -8, 0] }}
+        transition={{
+          repeat: Infinity,
+          duration: 3,
+        }}
+        className="text-5xl mb-5"
+      >
+        🚗
+      </motion.div>
 
-                {/* Success State */}
-                {verified && !loading && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="flex flex-col items-center gap-4"
-                    >
-                        <CheckCircle2 size={50} className="text-green-400" />
-                        <p className="text-green-300 font-semibold">
-                            Your email has been verified successfully!
-                        </p>
-                        <Link
-                            href="/login"
-                            className="bg-white text-indigo-600 px-6 py-2 rounded-xl font-semibold shadow-lg hover:scale-105 transition"
-                        >
-                            Go to Login
-                        </Link>
-                    </motion.div>
-                )}
+      <h1 className="text-4xl font-bold mb-3">
+        Email Verification
+      </h1>
 
-                {/* Error State */}
-                {error && !loading && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="flex flex-col items-center gap-4"
-                    >
-                        <XCircle size={50} className="text-red-400" />
-                        <p className="text-red-300 font-semibold">
-                            Invalid or expired token.
-                        </p>
-                        <p className="text-white/60 text-sm">
-                            Please try again or request a new verification link.
-                        </p>
-                    </motion.div>
-                )}
+      <p className="text-gray-400 mb-8">
+        Driver Safety AI Account Verification
+      </p>
 
-            </motion.div>
-        </div>
-    )
+      {/* Loading */}
+      {loading && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="flex flex-col items-center gap-4"
+        >
+          <Loader2
+            size={45}
+            className="animate-spin text-cyan-400"
+          />
+
+          <p className="text-gray-300">
+            Verifying your email...
+          </p>
+        </motion.div>
+      )}
+
+      {/* Success */}
+      {verified && !loading && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col items-center gap-5"
+        >
+          <div className="bg-green-500/10 border border-green-500/20 p-5 rounded-full">
+            <CheckCircle2
+              size={60}
+              className="text-green-400"
+            />
+          </div>
+
+          <h2 className="text-2xl font-semibold text-green-400">
+            Verification Successful
+          </h2>
+
+          <p className="text-gray-300">
+            Your email has been verified successfully.
+            You can now login and access the platform.
+          </p>
+
+          <Link
+            href="/login"
+            className="
+              w-full
+              bg-gradient-to-r
+              from-cyan-500
+              to-blue-600
+              hover:from-cyan-400
+              hover:to-blue-500
+              py-3
+              rounded-xl
+              font-semibold
+              shadow-lg
+              transition-all
+            "
+          >
+            Go to Login
+          </Link>
+        </motion.div>
+      )}
+
+      {/* Error */}
+      {error && !loading && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col items-center gap-5"
+        >
+          <div className="bg-red-500/10 border border-red-500/20 p-5 rounded-full">
+            <XCircle
+              size={60}
+              className="text-red-400"
+            />
+          </div>
+
+          <h2 className="text-2xl font-semibold text-red-400">
+            Verification Failed
+          </h2>
+
+          <p className="text-gray-300">
+            This verification link is invalid or has expired.
+          </p>
+
+          <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-4">
+            <p className="text-yellow-300 text-sm">
+              Please request a new verification email and try again.
+            </p>
+          </div>
+
+          <Link
+            href="/login"
+            className="
+              w-full
+              bg-white/10
+              border
+              border-white/10
+              hover:bg-white/20
+              py-3
+              rounded-xl
+              transition
+            "
+          >
+            Back to Login
+          </Link>
+        </motion.div>
+      )}
+
+    </motion.div>
+  </div>
+);
 }

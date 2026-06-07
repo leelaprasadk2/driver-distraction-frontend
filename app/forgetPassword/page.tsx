@@ -26,67 +26,139 @@ export default function forgetPassword() {
         }
     }
 
-    return (
-        <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 overflow-hidden">
+   return (
+  <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-black relative overflow-hidden flex items-center justify-center px-4">
 
-            {/* Blurred floating background circles */}
-            <div className="absolute w-72 h-72 bg-white/20 rounded-full blur-3xl top-10 left-10"></div>
-            <div className="absolute w-96 h-96 bg-pink-400/30 rounded-full blur-3xl bottom-10 right-10"></div>
+    {/* Background Glow */}
+    <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute top-20 left-20 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl"></div>
 
-            <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5 }}
-                className="relative backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl rounded-3xl p-10 w-full max-w-md text-white"
-            >
+      <div className="absolute bottom-20 right-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl"></div>
+    </div>
 
-                <h1 className="text-3xl font-bold text-center mb-2">
-                    Forgot Password
-                </h1>
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5 }}
+      className="relative w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/10 shadow-2xl rounded-3xl p-10 text-white"
+    >
 
-                <p className="text-center text-sm text-white/70 mb-8">
-                    Enter your email to receive a reset link
-                </p>
+      {/* Floating Car */}
+      <motion.div
+        animate={{ y: [0, -8, 0] }}
+        transition={{
+          repeat: Infinity,
+          duration: 3,
+        }}
+        className="text-center text-5xl mb-4"
+      >
+        🚗
+      </motion.div>
 
-                <div className="space-y-6">
+      {/* Heading */}
+      <h1 className="text-4xl font-bold text-center mb-3">
+        Forgot Password
+      </h1>
 
-                    {/* Input Field */}
-                    <div className="relative">
-                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60" size={18} />
+      <p className="text-center text-gray-400 mb-8">
+        Enter your registered email to receive a secure reset link
+      </p>
 
-                        <input
-                            type="email"
-                            id="email"
-                            value={user.email}
-                            onChange={(e) =>
-                                setUser({ ...user, email: e.target.value })
-                            }
-                            placeholder="Enter your email"
-                            className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/20 border border-white/30 placeholder-white/60 text-white focus:outline-none focus:ring-2 focus:ring-white/60 transition"
-                        />
-                    </div>
+      <div className="space-y-6">
 
-                    {/* Button */}
-                    <motion.button
-                        whileTap={{ scale: 0.97 }}
-                        whileHover={{ scale: 1.02 }}
-                        onClick={emailsubmit}
-                        disabled={loading}
-                        className="w-full flex items-center justify-center gap-2 bg-white text-indigo-600 font-semibold py-3 rounded-xl shadow-lg transition disabled:opacity-60"
-                    >
-                        {loading && <Loader2 className="animate-spin" size={18} />}
-                        {loading ? "Sending..." : "Send Reset Link"}
-                    </motion.button>
-                </div>
+        {/* Email Input */}
+        <div className="relative">
+          <Mail
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+            size={18}
+          />
 
-                <div className="mt-8 text-center text-sm text-white/70">
-                    Remember your password?{" "}
-                    <span className="underline cursor-pointer hover:text-white">
-                        Back to login
-                    </span>
-                </div>
-
-            </motion.div>
+          <input
+            type="email"
+            value={user.email}
+            onChange={(e) =>
+              setUser({
+                ...user,
+                email: e.target.value,
+              })
+            }
+            placeholder="Enter your email"
+            className="
+              w-full
+              pl-12
+              pr-4
+              py-4
+              rounded-2xl
+              bg-white/10
+              border
+              border-white/10
+              text-white
+              placeholder-gray-400
+              focus:outline-none
+              focus:border-cyan-500
+              transition
+            "
+          />
         </div>
-    )
+
+        {/* Button */}
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={emailsubmit}
+          disabled={loading}
+          className="
+            w-full
+            bg-gradient-to-r
+            from-cyan-500
+            to-blue-600
+            hover:from-cyan-400
+            hover:to-blue-500
+            text-white
+            font-semibold
+            py-4
+            rounded-2xl
+            shadow-lg
+            transition-all
+            flex
+            items-center
+            justify-center
+            gap-2
+          "
+        >
+          {loading && (
+            <Loader2
+              className="animate-spin"
+              size={18}
+            />
+          )}
+
+          {loading
+            ? "Sending Reset Link..."
+            : "Send Reset Link"}
+        </motion.button>
+
+      </div>
+
+      {/* Security Notice */}
+      <div className="mt-6 bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-4">
+        <p className="text-yellow-300 text-sm text-center">
+          🔒 A password reset link will be sent to your registered email address.
+        </p>
+      </div>
+
+      {/* Back to Login */}
+      <div className="mt-8 text-center text-sm text-gray-400">
+        Remember your password?{" "}
+        <a
+          href="/login"
+          className="text-cyan-400 hover:text-cyan-300 font-medium"
+        >
+          Back to Login
+        </a>
+      </div>
+
+    </motion.div>
+  </div>
+);
 }
