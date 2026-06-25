@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
         if (!user.isVerfied) {
             console.log("User email not verified:", user.email);
             return NextResponse.json(
-                { message: "Please verify your email before login" },
+                { message: "Your account is pending admin approval. Please wait until the administrator approves your account." },
                 { status: 400 }
             );
         }
